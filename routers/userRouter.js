@@ -71,15 +71,43 @@ router.post('/', async (req, res) => {
 
     res.status(201).json(savedUser); // Respond with the saved user data or a success message
     
-    
-    
-
-
 }  
   catch (err) {
     console.error(err);
     res.status(500).send();
   }
+});
+
+
+
+router.post('/login',async(req,res)=>{
+
+    try{
+
+        const{email, password}= req.body;
+        // it will take some time to find the user in the database so we will use await
+        // findOne() method will find the first document that matches the filter criteria
+        //  req.body is an object that contains the data submitted from the form
+
+        if(!email || !password){
+            return res.status(400).json({errorMessage:"Please enter all required fields."});
+            // 400 is a bad request status code 
+        }
+
+
+        const existingUser = await User.findOne({email:email});
+
+        if (!existingUser){
+            return res.status(401).json({errorMessage:"Wrong email or password."});
+            // 401 is an unauthorized status code
+        }
+
+
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).send();
+    }
 });
 
 module.exports = router;
