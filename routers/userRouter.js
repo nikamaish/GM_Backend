@@ -133,4 +133,24 @@ router.post('/login',async(req,res)=>{
     }
 });
 
+
+
+router.get('/logout', (req, res) => {
+    res.cookie('token', '', {
+        httpOnly: true,
+        expires: new Date(0),
+        domain: 'localhost', // Add this line if needed
+    }).send();
+
+    // empty value? because we are deleting the cookie and not sending any data in the response body, we are just sending an empty cookie
+    // httpOnly:true? because we want to delete the cookie on the client side , send is used to send the cookie to the client
+    // why syntax is like this? because we are not sending any data in the response body
+    // new Date(0) is a date in the past, it expries the cookie immediately and the browser will delete the cookie but when the user press logout button then the user will be logged out immediately but the user will be logged out only on the client side, the user will still be logged in on the server side.
+    // we can also delete the cookie on the server side but we will not do that because it is not a good practice to store the token in a cookie on the server side.
+// but without entering related email and password, how can we logout?
+// we can logout by deleting the cookie on the client side
+});
+
+
+
 module.exports = router;
