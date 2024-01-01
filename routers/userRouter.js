@@ -102,11 +102,34 @@ router.post('/login',async(req,res)=>{
             // 401 is an unauthorized status code
         }
 
+        const passwordCorrect = await bcrypt.compare(password,existingUser.passwordHash);
+        // compare() method will compare the password entered by the user with the hashed password stored in the database
+        // what if dont write this line of code? then the user will be logged in even if the password is wrong
+        
+        if(!passwordCorrect){
+            return res.status(401).json({errorMessage:"Wrong email or password."});
+        }
+        const token = jwt.sign({
+            user:existingUser._id
+        },process.env.JWT_SECRET);
 
+
+        // send the token in a http only cookie
+        res.cookie("token",token,{
+            httpOnly:true,
+            secure:true,
+            sameSite:"none"
+        });
+    
+    
+        // res.status(201).json(savedUser); // Respond with the saved user data or a success message
+        res.status(200).json({ token, user: { id: existingUser._id, email: existingUser.email } });
+
+        // does above line of code requried?
     }
     catch(err){
-        console.error(err);
-        res.status(500).send();
+        res.status(500).json({ errorMessage: 'Internal Server Error' });
+
     }
 });
 
