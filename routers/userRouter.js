@@ -116,14 +116,14 @@ router.post('/login',async(req,res)=>{
 
         // send the token in a http only cookie
         res.cookie("token",token,{
-            httpOnly:true,
-            secure:true,
-            sameSite:"none"
+          httpOnly:true,
+          secure:true,
+          sameSite:"none"
         });
-    
-    
+      
+      
         // res.status(201).json(savedUser); // Respond with the saved user data or a success message
-        res.status(200).json({ token, user: { id: existingUser._id, email: existingUser.email } });
+        res.status(200).json({ message: "User logged in successfully", user: { id: existingUser._id, email: existingUser.email } });
 
         // does above line of code requried?
     }
